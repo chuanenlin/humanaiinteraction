@@ -1,4 +1,4 @@
-# Lab 3: Prototype AI features in a web app
+# Lab 4: Prototype AI features in a web app
 
 This is a small web app you can build your project's AI features in. It goes with Lecture 12 and Milestone 3, and you can keep using it for Milestone 4. A Python backend (Flask) calls a model and a plain HTML and JavaScript page shows the answer. There is no build step or framework to learn.
 
@@ -87,7 +87,7 @@ def chain():
     return jsonify({"steps": steps, "results": results})
 ```
 
-- For an agent that asks before it acts (Milestone 4), you can copy the `POLICY` table and the `run_agent` loop from the Lab 5 notebook into a route like the one above, then show the plan in the page with a button for each step.
+- For an agent that asks before it acts (Milestone 4), you can copy the `POLICY` table and the `run_agent` loop from the Lab 6 notebook into a route like the one above, then show the plan in the page with a button for each step.
 
 ## License
 
