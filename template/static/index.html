@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI feature prototype</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <main>
+    <h1>AI feature prototype</h1>
+    <p class="hint">Change this page to fit your project. Every request and edit is saved in <code>logs/interactions.jsonl</code> for your user tests.</p>
+
+    <form id="ask">
+      <label for="prompt">Your request</label>
+      <textarea id="prompt" rows="3" placeholder="For example: Write two sentences of feedback on a student's chair sketch. The proportions are off, but the line work is confident."></textarea>
+      <div class="row">
+        <label for="temperature">Variety <span id="temperature-value">0.7</span></label>
+        <input id="temperature" type="range" min="0" max="1.5" step="0.1" value="0.7">
+        <button type="submit" id="send">Ask</button>
+      </div>
+    </form>
+
+    <section id="result" hidden>
+      <div class="result-head">
+        <span id="confidence" class="confidence"></span>
+        <label class="toggle"><input type="checkbox" id="highlight" checked> Highlight words the model was unsure about</label>
+      </div>
+      <div id="answer" class="answer"></div>
+      <div class="row">
+        <button id="regenerate" type="button">Regenerate</button>
+        <button id="edit" type="button">Edit</button>
+        <button id="keep" type="button" hidden>Save my edit</button>
+        <span id="status" class="status"></span>
+      </div>
+      <h2>Versions</h2>
+      <ol id="history" class="history"></ol>
+    </section>
+  </main>
+  <script src="/static/app.js"></script>
+</body>
+</html>
