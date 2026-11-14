@@ -96,6 +96,7 @@ def generate_local(prompt, temperature=0.7, max_new_tokens=200):
 #        API_BASE_URL=https://generativelanguage.googleapis.com/v1beta/openai/   (Google Gemini, for example)
 #        API_MODEL=<a model name from the provider's documentation>
 #        API_KEY=<your key>
+#        API_REASONING_EFFORT=low   (only for a model that thinks before it answers, such as Gemini)
 #   3. Restart the app.
 # Most APIs do not return token probabilities by default, so tokens and confidence are None here.
 # Some providers return them if you add "logprobs": True to the request; see their documentation.
@@ -104,19 +105,28 @@ def generate_api(prompt, temperature=0.7, max_new_tokens=200):
     import requests
 
     base_url = os.environ["API_BASE_URL"].rstrip("/") + "/"
+    body = {
+        "model": os.environ["API_MODEL"],
+        "messages": [{"role": "system", "content": SYSTEM_PROMPT}, {"role": "user", "content": prompt}],
+        "temperature": temperature,
+        # A model that thinks before it answers counts the thinking toward this limit,
+        # so it is higher than max_new_tokens for the local model.
+        "max_tokens": int(os.environ.get("API_MAX_TOKENS", 2000)),
+    }
+    if os.environ.get("API_REASONING_EFFORT"):
+        body["reasoning_effort"] = os.environ["API_REASONING_EFFORT"]
     response = requests.post(
         base_url + "chat/completions",
         headers={"Authorization": f"Bearer {os.environ['API_KEY']}"},
-        json={
-            "model": os.environ["API_MODEL"],
-            "messages": [{"role": "system", "content": SYSTEM_PROMPT}, {"role": "user", "content": prompt}],
-            "temperature": temperature,
-            "max_tokens": max_new_tokens,
-        },
+        json=body,
         timeout=60,
     )
     response.raise_for_status()
-    text = response.json()["choices"][0]["message"]["content"]
+    choice = response.json()["choices"][0]
+    text = choice["message"].get("content")
+    if not text:
+        raise RuntimeError(f"the model sent back no text (finish_reason: {choice.get('finish_reason')}). "
+                           "If it thinks before it answers, raise API_MAX_TOKENS or set API_REASONING_EFFORT=low.")
     return {"text": text.strip(), "tokens": None, "confidence": None}
 
 

@@ -44,16 +44,17 @@ The default is Qwen2.5-0.5B-Instruct, a small open model that runs on most lapto
 MODEL_ID=Qwen/Qwen2.5-1.5B-Instruct python app.py
 ```
 
-To use a model behind an API instead, see `generate_api` in `model.py`, which is marked "SWAP IN ANY PROVIDER HERE". Most providers accept the same request format, so you only need to set these four environment variables and restart:
+To use a model behind an API instead, see `generate_api` in `model.py`, which is marked "SWAP IN ANY PROVIDER HERE". Most providers accept the same request format, so you only need to set these environment variables and restart:
 
 ```
 MODEL_BACKEND=api
 API_BASE_URL=https://generativelanguage.googleapis.com/v1beta/openai/
 API_MODEL=<a model name from the provider's documentation>
 API_KEY=<your key>
+API_REASONING_EFFORT=low
 ```
 
-The example address is Google's Gemini API, which has a free tier. Please never write a key into the code or commit it to GitHub. Most APIs do not send token probabilities back, so the page will say that confidence is not available. If your provider can return them, you can ask for them in `generate_api` and fill in `tokens` and `confidence`.
+The example address is Google's Gemini API, which has a free tier. Gemini models think before they answer, and the thinking counts toward the reply's length limit, so `API_REASONING_EFFORT=low` keeps it short. Leave that line out for a model that does not think. Please never write a key into the code or commit it to GitHub. Most APIs do not send token probabilities back, so the page will say that confidence is not available. If your provider can return them, you can ask for them in `generate_api` and fill in `tokens` and `confidence`.
 
 ## About the confidence number
 
